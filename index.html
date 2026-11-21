@@ -86,9 +86,9 @@ function pick(k,i,j){V.a=V.a||{};if(V.a[i]!==undefined)return;V.a[i]=j;if(k==='a
 function finish(){const e=EX[V.y];let s=0;e.q.forEach((q,i)=>{if(V.a[i]===q[2])s++});S.prog['ex'+V.y]={s};go('res',{y:V.y,a:V.a})}
 function chatA(j){const t=T.find(x=>x.id===V.id),q=t.x[V.i];const ok=j===q[2];V.m.push(['me',q[1][j]],['prof',ok?'✅ Correcto! Muito bem.':'❌ Quase. A resposta certa é: <b>'+q[1][q[2]]+'</b>.']);V.m=V.m.slice(-2);V.wait=1;render()}
 async function J(p,fresh){const u=REMOTE+p+(fresh?'?t='+Date.now():'');try{const r=await fetch(u);if(!r.ok)throw 0;const d=await r.json();try{localStorage.setItem('dzc:'+p,JSON.stringify(d))}catch(e){}return d}catch(e){try{return JSON.parse(localStorage.getItem('dzc:'+p))}catch(x){return null}}}
-async function boot(fresh){$.innerHTML='<p class="mut">A carregar conteúdos…</p>';const m=await J('data/index.json',fresh);if(!m){$.innerHTML='<h1>Sem conteúdos</h1><p>Verifique a ligação e tente de novo.</p><button class="btn p" onclick="boot(true)">Tentar de novo</button>';return}
+async function boot(fresh){$.innerHTML='<p class="mut">A carregar conteúdos…</p>';const m=await J('index.json',fresh);if(!m){$.innerHTML='<h1>Sem conteúdos</h1><p>Verifique a ligação e tente de novo.</p><button class="btn p" onclick="boot(true)">Tentar de novo</button>';return}
 DV=m.version;rev=m.review||{};YRS=m.exams.map(e=>e.year);T=[];EX={};
-await Promise.all([...m.lessons.map(async f=>{const d=await J('data/lessons/'+f+'.json',fresh);if(d)T.push(d)}),...m.exams.filter(e=>!e.soon).map(async e=>{const d=await J('data/exams/'+e.year+'.json',fresh);if(d)EX[e.year]=d})]);
+await Promise.all([...m.lessons.map(async f=>{const d=await J(''+f+'.json',fresh);if(d)T.push(d)}),...m.exams.filter(e=>!e.soon).map(async e=>{const d=await J(''+e.year+'.json',fresh);if(d)EX[e.year]=d})]);
 T.sort((a,b)=>a.l-b.l);go('home')}
 boot();
 </script></body></html>
