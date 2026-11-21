@@ -1,0 +1,12 @@
+{
+ "version": 1,
+ "lessons": ["classes-de-palavras", "literatura-mocambicana"],
+ "exams": [
+  {"year": 2009},
+  {"year": 2010, "soon": true},
+  {"year": 2011, "soon": true},
+  {"year": 2012, "soon": true},
+  {"year": 2013, "soon": true}
+ ],
+ "review": {"Gramática": "classes-de-palavras", "Texto": "classes-de-palavras", "Literatura": "literatura-mocambicana"}
+}

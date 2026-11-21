@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dondza aqui</title>
+<style>
+:root{--bg:#f6f9fd;--card:#fff;--tx:#1d2b3a;--mut:#6b7a8c;--pri:#2f6fb5;--bd:#dbe4ef;--ok:#2e9d57;--okb:#dff4e6;--no:#d64545;--nob:#fbe3e3;--ye:#f2b705;--yeb:#fff6d6;--gr:#2e9d57;--grb:#e3f5e9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1722;--card:#18232f;--tx:#e8eef5;--mut:#92a1b3;--pri:#6aa6e8;--bd:#2a3846;--okb:#173a26;--nob:#44201f;--yeb:#3b3210;--grb:#173a26}}
+:root[data-theme=dark]{--bg:#0f1722;--card:#18232f;--tx:#e8eef5;--mut:#92a1b3;--pri:#6aa6e8;--bd:#2a3846;--okb:#173a26;--nob:#44201f;--yeb:#3b3210;--grb:#173a26}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+#app{max-width:520px;margin:auto;padding:16px 16px 40px}
+h1{font-size:22px;margin:4px 0 2px}h2{font-size:18px;margin:16px 0 8px}p{margin:6px 0}
+.mut{color:var(--mut);font-size:14px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin:10px 0}
+.btn{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:12px;padding:13px 14px;margin:8px 0;font:inherit;cursor:pointer}
+.btn.p{background:var(--pri);color:#fff;border-color:var(--pri);text-align:center}
+.btn.ok{background:var(--okb);border-color:var(--ok)}.btn.no{background:var(--nob);border-color:var(--no)}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.top button{background:none;border:0;color:var(--pri);font-size:15px;cursor:pointer;padding:6px 0}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.plan{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:10px 6px;text-align:center;font:inherit;color:var(--tx);cursor:pointer;position:relative;min-height:112px}
+.plan b{display:block;font-size:15px}.plan span{font-size:12px;color:var(--mut)}
+.lock{position:absolute;top:6px;right:8px;font-size:15px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.tab{border:2px solid transparent;border-radius:12px;padding:12px;text-align:center;font:inherit;color:var(--tx);cursor:pointer}
+.tab.a{background:var(--yeb);border-color:var(--ye)}.tab.e{background:var(--grb);border-color:var(--gr)}
+.tab.off{opacity:.55}
+.bar{height:8px;background:var(--bd);border-radius:8px;overflow:hidden}.bar i{display:block;height:100%;background:var(--pri)}
+.yrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+.yr{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px 4px;text-align:center;font:inherit;color:var(--tx);cursor:pointer}
+.msg{padding:10px 12px;border-radius:14px;margin:8px 0;max-width:88%}
+.prof{background:var(--card);border:1px solid var(--bd)}.me{background:var(--pri);color:#fff;margin-left:auto}
+input[type=text]{width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:20px;background:var(--bd);color:var(--mut)}
+</style></head><body><div id="app"></div>
+<script>
+const SALT='DONDZA26';
+function codeFor(id,p){let h=7;for(const c of id+p+SALT)h=(h*31+c.charCodeAt(0))%1000003;return String(h).padStart(6,'0')}
+let S={name:'',disc:'',lvl:'',theme:'auto',id:'',unl:{},prog:{},done:{}};
+try{Object.assign(S,JSON.parse(localStorage.getItem('dz')||'{}'))}catch(e){}
+if(!S.id){S.id='DZ-'+Math.random().toString(36).slice(2,8).toUpperCase()}
+function save(){try{localStorage.setItem('dz',JSON.stringify(S))}catch(e){}}
+function theme(){const r=document.documentElement;S.theme==='auto'?r.removeAttribute('data-theme'):r.setAttribute('data-theme',S.theme)}
+const LV=['Básico','Intermédio','Avançado'];
+// categoria -> tópico para revisão
+let T=[],EX={},YRS=[],rev={},DV=0;const REMOTE='';function RV(c){return T.find(t=>t.id===rev[c])||T[0]}
+function body(t){return t.s?t.s.map(s=>`<h2>${s.h}</h2>`+s.p.map(p=>`<p>${p}</p>`).join('')).join(''):`<p>${t.b}</p>`}
+
+const $=document.getElementById('app');
+let V={s:'home'};
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function go(s,o){V=Object.assign({s},o||{});render();window.scrollTo(0,0)}
+function top(t,back){return `<div class="top">${back?`<button onclick="go('${back}')">‹ Voltar</button>`:''}</div><h1>${t}</h1>`}
+function unlocked(p){return p==='basico'||S.unl[p]}
+function render(){theme();save();const f=R[V.s];$.innerHTML=f?f():'';}
+const R={
+home(){
+ if(!S.name)return `<h1>Dondza aqui</h1><p class="mut">Prepare-se para o exame de admissão.</p><div class="card"><p>Como se chama?</p><input type="text" id="nm" placeholder="O seu nome"><button class="btn p" onclick="S.name=document.getElementById('nm').value.trim()||'Estudante';go('disc')">Continuar</button></div>`;
+ if(!S.disc)return R.disc();if(!S.lvl)return R.lvl();return R.plans()},
+disc(){return `<h1>Olá, ${esc(S.name)}!</h1><p class="mut">Que disciplina quer preparar?</p><button class="btn" onclick="S.disc='Língua Portuguesa';go('lvl')">📘 Língua Portuguesa</button><button class="btn" disabled style="opacity:.5">Inglês (em breve)</button><button class="btn" disabled style="opacity:.5">Matemática (em breve)</button>`},
+lvl(){return `<h1>Qual é o seu nível?</h1><p class="mut">Em ${S.disc}. Pode mudar depois nas configurações.</p>`+LV.map(l=>`<button class="btn" onclick="S.lvl='${l}';go('plans')">${l}</button>`).join('')},
+plans(){
+ const P=[['basico','Básico','Grátis','📗'],['maza','Maza','100 MT','🏆'],['chat','Chat lessons','100 MT','💬']];
+ return `<div class="top"><span class="tag">${S.disc} · ${S.lvl}</span><span style="flex:1"></span><button onclick="go('cfg')">⚙ Config.</button></div><h1>Escolha o seu plano</h1><div class="plans">`+P.map(p=>`<button class="plan" onclick="openPlan('${p[0]}')">${unlocked(p[0])?'':'<span class="lock">🔒</span>'}<div style="font-size:24px">${p[3]}</div><b>${p[1]}</b><span>${p[2]}</span></button>`).join('')+`</div><p class="mut" style="margin-top:14px">Básico: todas as matérias. Maza: Básico, aulas e exames reais interactivos. Chat lessons: aulas em conversa com um professor virtual.</p>`},
+lock(){const p=V.p,n=p==='maza'?'Maza':'Chat lessons';return top('Desbloquear '+n,'plans')+`<div class="card"><p>O seu ID:</p><h2 style="letter-spacing:2px">${S.id}</h2><p class="mut">Envie este ID ao responsável. Valor: 100 MT. Ele devolverá o código de desbloqueio.</p><input type="text" id="cd" placeholder="Código de 6 dígitos" inputmode="numeric"><button class="btn p" onclick="tryCode('${p}')">Desbloquear</button><p id="er" style="color:var(--no)"></p></div>`},
+basic(){const L=T.filter(t=>t.l<=LV.indexOf(S.lvl)+1);return top('Plano Básico','plans')+`<p class="mut">Conteúdos recomendados para o nível ${S.lvl}, focados no exame de admissão.</p>`+LV.map((n,i)=>{const ts=T.filter(t=>t.l===i);return `<h2>Nível ${i+1}: ${n}${LV[i]===S.lvl?' · o seu':''}</h2>`+ts.map(t=>`<button class="btn" onclick="go('topic',{id:'${t.id}',b:'${V.s==='basic'?'basic':V.s}'})">${S.done[t.id]?'✅':'📖'} ${t.t} <span class="tag">${t.c}</span></button>`).join('')}).join('')},
+topic(){const t=T.find(x=>x.id===V.id);V.a=V.a||{};return top(t.t,V.b||'basic')+`<div class="card">${body(t)}</div><h2>Exercícios</h2>`+t.x.map((q,i)=>qHtml(q,i,V.a[i],'ans')).join('')+`<p class="mut">Verde: certa. Vermelho: errada.</p>`},
+maza(){V.t=V.t||'a';const a=V.t==='a';return top('Plano Maza','plans')+`<div class="tabs"><button class="tab a ${a?'':'off'}" onclick="V.t='a';render()">📖<br><b>Aulas</b></button><button class="tab e ${a?'off':''}" onclick="V.t='e';render()">📝<br><b>Exames</b></button></div>`+(a?R.basicList():`<h2>Exames interactivos</h2><div class="yrs">`+YRS.map(y=>`<button class="yr" onclick="${EX[y]?`go('exam',{y:${y}})`:`alert('Exame ${y}: será adicionado em breve.')`}"><b>${y}</b><br><span class="mut">${EX[y]?(S.prog['ex'+y]?S.prog['ex'+y].s+'/'+EX[y].q.length:'Resolver'):'Em breve'}</span></button>`).join('')+`</div>`)},
+basicList(){return LV.map((n,i)=>`<h2>${n}</h2>`+T.filter(t=>t.l===i).map(t=>`<button class="btn" onclick="go('topic',{id:'${t.id}',b:'maza'})">${S.done[t.id]?'✅':'📖'} ${t.t}</button>`).join('')).join('')},
+exam(){const e=EX[V.y];V.a=V.a||{};const n=e.q.length,ans=Object.keys(V.a).length;
+ return top('Exame UP '+V.y,'maza')+`<div class="bar"><i style="width:${ans/n*100}%"></i></div><p class="mut">${ans} de ${n} respondidas</p><div class="card mut">${e.r}</div>`+e.q.map((q,i)=>qHtml(q,i,V.a[i],'exa')).join('')+(ans===n?`<button class="btn p" onclick="finish()">Ver feedback</button>`:'')},
+res(){const e=EX[V.y],b={};e.q.forEach((q,i)=>{const c=q[3];b[c]=b[c]||[0,0];b[c][1]++;if(V.a[i]===q[2])b[c][0]++});const sc=Object.values(b).reduce((s,x)=>s+x[0],0);
+ return top('Resultado '+V.y,'maza')+`<div class="card"><h2>${sc} / ${e.q.length}</h2>`+Object.keys(b).map(c=>{const p=b[c][0]/b[c][1];return `<p>${c}: ${b[c][0]}/${b[c][1]}<div class="bar"><i style="width:${p*100}%;background:${p<.6?'var(--no)':'var(--ok)'}"></i></div></p>`}).join('')+`</div>`+Object.keys(b).filter(c=>b[c][0]/b[c][1]<.7).map(c=>`<div class="card"><b>Precisa melhorar: ${c}</b><p class="mut">Reveja as aulas desta área.</p><button class="btn" onclick="V.t='a';go('maza',{t:'a'})">Rever na aba Aulas</button><button class="btn" onclick="go('topic',{id:'${RV(c).id}',b:'maza'})">📖 ${RV(c).t}</button></div>`).join('')||'<div class="card">Excelente! Continue a praticar.</div>'},
+chat(){const g=T[V.ci||0];return top('Chat lessons','plans')+`<div class="card"><b>Plano</b><p class="mut">Escolha um ritmo para concluir o nível ${S.lvl}.</p>${['Diário (1 tópico/dia)','Semanal (3 tópicos/semana)','Mensal (todos os tópicos)'].map((p,i)=>`<button class="btn ${S.pace===i?'ok':''}" onclick="S.pace=${i};render()">${p}</button>`).join('')}</div><h2>Aula de hoje</h2>`+T.filter(t=>t.l<=LV.indexOf(S.lvl)).map(t=>`<button class="btn" onclick="go('lesson',{id:'${t.id}',i:0,m:[]})">💬 ${t.t}</button>`).join('')},
+lesson(){const t=T.find(x=>x.id===V.id),q=t.x[V.i];let h=top(t.t,'chat');
+ h+=`<div class="msg prof">👩‍🏫 Olá, ${esc(S.name)}! Vamos estudar: <b>${t.t}</b>.</div><div class="msg prof">${t.b}</div>`;
+ V.m.forEach(m=>h+=`<div class="msg ${m[0]}">${m[1]}</div>`);
+ if(q){h+=`<div class="msg prof">${q[0]}</div>`+(V.wait?'<button class="btn p" onclick="V.i++;V.wait=0;render()">Continuar</button>':q[1].map((o,j)=>`<button class="btn" onclick="chatA(${j})">${o}</button>`).join(''))}
+ else h+=`<div class="msg prof">Parabéns, concluiu esta aula! 🎉</div><button class="btn p" onclick="S.done['${t.id}']=1;go('chat')">Terminar</button>`;return h},
+cfg(){return top('Configurações','plans')+`<div class="card"><p>Nome</p><input type="text" value="${esc(S.name)}" onchange="S.name=this.value;save()"></div><div class="card"><p>Aparência</p>${[['auto','Automático'],['light','Dia'],['dark','Noite']].map(x=>`<button class="btn ${S.theme===x[0]?'ok':''}" onclick="S.theme='${x[0]}';render()">${x[1]}</button>`).join('')}</div><div class="card"><p>Disciplina e nível: ${S.disc} · ${S.lvl}</p><button class="btn" onclick="S.lvl='';S.disc='';go('home')">Alterar disciplina ou nível</button></div><div class="card"><p>O seu ID: <b>${S.id}</b></p><p class="mut">Planos: Básico ${'✅'} · Maza ${S.unl.maza?'✅':'🔒'} · Chat lessons ${S.unl.chat?'✅':'🔒'}</p></div><div class="card"><button class="btn" onclick="if(confirm('Apagar o progresso?')){S.prog={};S.done={};go('plans')}">Apagar progresso</button></div><div class="card"><button class="btn" onclick="boot(true)">🔄 Actualizar conteúdos</button><p class="mut">Conteúdos v${DV}</p></div><p class="mut">Dondza aqui · idealizado por Assane Filipe · v1.0</p>`}
+};
+function openPlan(p){if(!unlocked(p))return go('lock',{p});go(p==='basico'?'basic':p)}
+function tryCode(p){const v=document.getElementById('cd').value.trim();if(v===codeFor(S.id,p)){S.unl[p]=1;go('plans')}else document.getElementById('er').textContent='Código inválido.'}
+function qHtml(q,i,a,k){const d=a!==undefined;return `<div class="card"><p><b>${i+1}.</b> ${q[0]}</p>`+q[1].map((o,j)=>{let c='';if(d){if(j===q[2])c='ok';else if(j===a)c='no'}return `<button class="btn ${c}" ${d?'disabled':''} onclick="pick('${k}',${i},${j})">${String.fromCharCode(65+j)}) ${o}</button>`}).join('')+`</div>`}
+function pick(k,i,j){V.a=V.a||{};if(V.a[i]!==undefined)return;V.a[i]=j;if(k==='ans'){const t=T.find(x=>x.id===V.id);if(Object.keys(V.a).length===t.x.length)S.done[t.id]=1}render()}
+function finish(){const e=EX[V.y];let s=0;e.q.forEach((q,i)=>{if(V.a[i]===q[2])s++});S.prog['ex'+V.y]={s};go('res',{y:V.y,a:V.a})}
+function chatA(j){const t=T.find(x=>x.id===V.id),q=t.x[V.i];const ok=j===q[2];V.m.push(['me',q[1][j]],['prof',ok?'✅ Correcto! Muito bem.':'❌ Quase. A resposta certa é: <b>'+q[1][q[2]]+'</b>.']);V.m=V.m.slice(-2);V.wait=1;render()}
+async function J(p,fresh){const u=REMOTE+p+(fresh?'?t='+Date.now():'');try{const r=await fetch(u);if(!r.ok)throw 0;const d=await r.json();try{localStorage.setItem('dzc:'+p,JSON.stringify(d))}catch(e){}return d}catch(e){try{return JSON.parse(localStorage.getItem('dzc:'+p))}catch(x){return null}}}
+async function boot(fresh){$.innerHTML='<p class="mut">A carregar conteúdos…</p>';const m=await J('data/index.json',fresh);if(!m){$.innerHTML='<h1>Sem conteúdos</h1><p>Verifique a ligação e tente de novo.</p><button class="btn p" onclick="boot(true)">Tentar de novo</button>';return}
+DV=m.version;rev=m.review||{};YRS=m.exams.map(e=>e.year);T=[];EX={};
+await Promise.all([...m.lessons.map(async f=>{const d=await J('data/lessons/'+f+'.json',fresh);if(d)T.push(d)}),...m.exams.filter(e=>!e.soon).map(async e=>{const d=await J('data/exams/'+e.year+'.json',fresh);if(d)EX[e.year]=d})]);
+T.sort((a,b)=>a.l-b.l);go('home')}
+boot();
+</script></body></html>
